@@ -1,4 +1,4 @@
-package main
+package myapp
 
 import (
 	"encoding/json"
@@ -14,6 +14,10 @@ type User struct {
 	LastName  string `json:"last_name"`
 	Email     string
 	CreatedAt time.Time
+}
+
+func indexHandler(w http.ResponseWriter, request *http.Request) {
+	fmt.Fprint(w, "Hello World")
 }
 
 func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -39,16 +43,14 @@ func barHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello %s!", name)
 }
 
-func main() {
+func NewHttpHandler() http.Handler {
 	mux := http.NewServeMux() // http.ServeMux 타입의 인스턴스 반환. (이 인스턴스를 사용해 특정 URL패턴에 대한 핸들러 함수 등록 가능)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, request *http.Request) {
-		fmt.Fprint(w, "Hello World")
-	})
+	mux.HandleFunc("/", indexHandler)
 
 	mux.HandleFunc("/bar", barHandler)
 
 	mux.Handle("/foo", &fooHandler{})
 
-	http.ListenAndServe(":3000", mux)
+	return mux
 }
