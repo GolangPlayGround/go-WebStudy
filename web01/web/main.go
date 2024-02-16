@@ -1,7 +1,7 @@
 package main
 
 import (
-	"goWeb/myapp"
+	"goWeb/web01/myapp"
 	"net/http"
 )
 
