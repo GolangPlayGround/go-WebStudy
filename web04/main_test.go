@@ -37,7 +37,7 @@ func TestDecoHandler(t *testing.T) {
 	resp, err := http.Get(ts.URL)
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, resp.StatusCode)
-	
+
 	r := bufio.NewReader(buf)
 	line, _, err := r.ReadLine()
 	assert.NoError(err)
