@@ -1,0 +1,18 @@
+package main
+
+import (
+	"goWeb/todo/app"
+	"net/http"
+
+	"github.com/urfave/negroni"
+)
+
+func main() {
+	m := app.MakeHandler()
+	n := negroni.Classic()
+	n.UseHandler(m)
+	err := http.ListenAndServe(":8090", n)
+	if err != nil {
+		panic(err)
+	}
+}
