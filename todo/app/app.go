@@ -54,6 +54,7 @@ func completeTodoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func MakeHandler() http.Handler {
+	//todoMap = make(map[int]*Todo)
 
 	rd = render.New()
 	r := mux.NewRouter()
