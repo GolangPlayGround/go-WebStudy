@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strconv"
 	"testing"
 
@@ -14,8 +15,12 @@ import (
 )
 
 func TestTodos(t *testing.T) {
+	os.Remove("./test.db")
 	assert := assert.New(t)
-	ts := httptest.NewServer(MakeHandler())
+	ah := MakeHandler("")
+	defer ah.Close()
+
+	ts := httptest.NewServer(ah)
 	defer ts.Close()
 	resp, err := http.PostForm(ts.URL+"/todos", url.Values{"name": {"Test todo"}})
 	assert.NoError(err)
@@ -39,7 +44,7 @@ func TestTodos(t *testing.T) {
 	todos := []*model.Todo{}
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	assert.NoError(err)
-	assert.Equal(len(todos), 2)
+	assert.Equal(2, len(todos))
 	for _, t := range todos {
 		if t.ID == id1 {
 			assert.Equal("Test todo", t.Name)
@@ -59,7 +64,7 @@ func TestTodos(t *testing.T) {
 	todos = []*model.Todo{}
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	assert.NoError(err)
-	assert.Equal(len(todos), 2)
+	assert.Equal(2, len(todos))
 	for _, t := range todos {
 		if t.ID == id1 {
 			assert.True(t.Completed)
