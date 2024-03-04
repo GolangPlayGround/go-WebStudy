@@ -18,5 +18,6 @@ type DBHandler interface {
 }
 
 func NewDBHandler(filepath string) DBHandler {
+	//handler = newMemoryHandler()
 	return newSqliteHandler(filepath)
 }

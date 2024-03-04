@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"fmt"
-	"goWeb/todo/model"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -12,12 +11,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/tuckersGo/goWeb/web20/model"
 )
 
 func TestTodos(t *testing.T) {
 	os.Remove("./test.db")
 	assert := assert.New(t)
-	ah := MakeHandler("")
+	ah := MakeHandler()
 	defer ah.Close()
 
 	ts := httptest.NewServer(ah)

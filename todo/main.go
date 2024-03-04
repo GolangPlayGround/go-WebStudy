@@ -14,8 +14,8 @@ func main() {
 	n := negroni.Classic()
 	n.UseHandler(m)
 
-	log.Println("====Started App===")
-	err := http.ListenAndServe(":8090", n)
+	log.Println("Started App")
+	err := http.ListenAndServe(":3000", n)
 	if err != nil {
 		panic(err)
 	}

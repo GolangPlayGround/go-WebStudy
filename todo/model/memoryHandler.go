@@ -7,7 +7,7 @@ type memoryHandler struct {
 }
 
 func (m *memoryHandler) GetTodos() []*Todo {
-	var list []*Todo
+	list := []*Todo{}
 	for _, v := range m.todoMap {
 		list = append(list, v)
 	}

@@ -12,7 +12,7 @@ type sqliteHandler struct {
 }
 
 func (s *sqliteHandler) GetTodos() []*Todo {
-	var todos []*Todo
+	todos := []*Todo{}
 	rows, err := s.db.Query("SELECT id, name, completed, createdAt FROM todos")
 	if err != nil {
 		panic(err)
