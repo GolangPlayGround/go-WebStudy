@@ -4,24 +4,21 @@ import (
 	"goWeb/todo/app"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/urfave/negroni"
 )
 
 func main() {
-	m := app.MakeHandler("./test.db")
-	defer m.Close()
-	n := negroni.Classic()
-	n.UseHandler(m)
 	err := godotenv.Load()
-
 	if err != nil {
 		panic(err)
 	}
+	m := app.MakeHandler(os.Getenv("DATABASE_URL"))
+	defer m.Close()
 
 	log.Println("Started App")
-	err = http.ListenAndServe(":3000", n)
+	err = http.ListenAndServe(":3000", m)
 	if err != nil {
 		panic(err)
 	}

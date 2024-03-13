@@ -42,20 +42,14 @@ func (a *AppHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 func (a *AppHandler) getTodoListHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := getSesssionID(r)
 	list := a.db.GetTodos(sessionId)
-	err := rd.JSON(w, http.StatusOK, list)
-	if err != nil {
-		return
-	}
+	rd.JSON(w, http.StatusOK, list)
 }
 
 func (a *AppHandler) addTodoHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := getSesssionID(r)
 	name := r.FormValue("name")
 	todo := a.db.AddTodo(name, sessionId)
-	err := rd.JSON(w, http.StatusCreated, todo)
-	if err != nil {
-		return
-	}
+	rd.JSON(w, http.StatusCreated, todo)
 }
 
 type Success struct {
@@ -113,6 +107,7 @@ func CheckSignin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) 
 		next(w, r)
 		return
 	}
+
 	http.Redirect(w, r, "/signin.html", http.StatusTemporaryRedirect)
 }
 

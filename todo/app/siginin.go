@@ -24,7 +24,7 @@ type GoogleUserId struct {
 }
 
 var googleOauthConfig = oauth2.Config{
-	RedirectURL:  "http://localhost:3000/auth/google/callback",
+	RedirectURL:  os.Getenv("DOMAIN_NAME") + "/auth/google/callback",
 	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 	ClientSecret: os.Getenv("GOOGLE_SECRET_KEY"),
 	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -32,6 +32,7 @@ var googleOauthConfig = oauth2.Config{
 }
 
 func googleLoginHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("RedirectURL:", googleOauthConfig.RedirectURL)
 	state := generateStateOauthCookie(w)
 	url := googleOauthConfig.AuthCodeURL(state)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
@@ -41,10 +42,7 @@ func generateStateOauthCookie(w http.ResponseWriter) string {
 	expiration := time.Now().Add(1 * 24 * time.Hour)
 
 	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		return ""
-	}
+	rand.Read(b)
 	state := base64.URLEncoding.EncodeToString(b)
 	cookie := &http.Cookie{Name: "oauthstate", Value: state, Expires: expiration}
 	http.SetCookie(w, cookie)
