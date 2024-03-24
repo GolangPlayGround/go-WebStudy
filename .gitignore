@@ -4,3 +4,4 @@
 *.db
 test.db
 .env
+test.db

@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -53,18 +53,15 @@ func (s *pqHandler) Close() {
 	}
 }
 
-func newPQHandler(dbConn string) DBHandler {
+func newPQHandler() DBHandler {
 
-	database, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  dbConn,
-		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 
 	if err != nil {
 		panic(err)
 	}
 
-	database.AutoMigrate(&Todo{})
+	db.AutoMigrate(&Todo{})
 
-	return &pqHandler{db: database}
+	return &pqHandler{db: db}
 }

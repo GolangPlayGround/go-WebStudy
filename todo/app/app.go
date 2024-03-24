@@ -27,7 +27,6 @@ var getSesssionID = func(r *http.Request) string {
 		return ""
 	}
 
-	// Set some session values.
 	val := session.Values["id"]
 	if val == nil {
 		return ""
@@ -122,7 +121,7 @@ func MakeHandler(filepath string) *AppHandler {
 
 	a := &AppHandler{
 		Handler: n,
-		db:      model.NewDBHandler(filepath),
+		db:      model.NewDBHandler(),
 	}
 
 	r.HandleFunc("/todos", a.getTodoListHandler).Methods("GET")
