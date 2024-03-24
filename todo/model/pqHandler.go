@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type pqHandler struct {
@@ -55,13 +56,19 @@ func (s *pqHandler) Close() {
 
 func newPQHandler() DBHandler {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
+		PrepareStmt: true,
+		Logger:      logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	db.AutoMigrate(&Todo{})
+	err = db.AutoMigrate(&Todo{})
+	if err != nil {
+		panic(err)
+	}
 
 	return &pqHandler{db: db}
 }

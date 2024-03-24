@@ -4,7 +4,6 @@ import (
 	"goWeb/todo/app"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -14,7 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	m := app.MakeHandler(os.Getenv("DATABASE_URL"))
+	m := app.MakeHandler()
 	defer m.Close()
 
 	log.Println("Started App")

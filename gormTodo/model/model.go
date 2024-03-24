@@ -3,7 +3,8 @@ package model
 import "time"
 
 type Todo struct {
-	ID        int       `json:"id" gorm:"primary_key"`
+	ID        int       `gorm:"primaryKey" json:"id"`
+	SessionID string    `gorm:"index;not null" json:"session_id"`
 	Name      string    `json:"name"`
 	Completed bool      `json:"completed"`
 	CreatedAt time.Time `json:"created_at"`
@@ -17,8 +18,7 @@ type DBHandler interface {
 	Close()
 }
 
-func NewDBHandler() DBHandler {
+func NewDBHandler(filepath string) DBHandler {
 	//handler = newMemoryHandler()
-	//return newSqliteHandler(dbConn)
-	return newPQHandler()
+	return newSqliteHandler(filepath)
 }

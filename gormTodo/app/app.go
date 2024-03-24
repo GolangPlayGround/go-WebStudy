@@ -1,7 +1,7 @@
 package app
 
 import (
-	"goWeb/todo/model"
+	"goWeb/gormTodo/model"
 	"net/http"
 	"os"
 	"strconv"
@@ -27,6 +27,7 @@ var getSesssionID = func(r *http.Request) string {
 		return ""
 	}
 
+	// Set some session values.
 	val := session.Values["id"]
 	if val == nil {
 		return ""
@@ -60,15 +61,9 @@ func (a *AppHandler) removeTodoHandler(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(vars["id"])
 	ok := a.db.RemoveTodo(id)
 	if ok {
-		err := rd.JSON(w, http.StatusOK, Success{true})
-		if err != nil {
-			return
-		}
+		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
-		err := rd.JSON(w, http.StatusOK, Success{false})
-		if err != nil {
-			return
-		}
+		rd.JSON(w, http.StatusOK, Success{false})
 	}
 }
 
@@ -78,15 +73,9 @@ func (a *AppHandler) completeTodoHandler(w http.ResponseWriter, r *http.Request)
 	complete := r.FormValue("complete") == "true"
 	ok := a.db.CompleteTodo(id, complete)
 	if ok {
-		err := rd.JSON(w, http.StatusOK, Success{true})
-		if err != nil {
-			return
-		}
+		rd.JSON(w, http.StatusOK, Success{true})
 	} else {
-		err := rd.JSON(w, http.StatusOK, Success{false})
-		if err != nil {
-			return
-		}
+		rd.JSON(w, http.StatusOK, Success{false})
 	}
 }
 
@@ -95,29 +84,37 @@ func (a *AppHandler) Close() {
 }
 
 func CheckSignin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	// if request URL is /signin.html, then next()
 	if strings.Contains(r.URL.Path, "/signin") ||
 		strings.Contains(r.URL.Path, "/auth") {
 		next(w, r)
 		return
 	}
 
-	next(w, r)
+	// if user already signed in
+	sessionID := getSesssionID(r)
+	if sessionID != "" {
+		next(w, r)
+		return
+	}
 
+	// if not user sign in
+	// redirect singin.html
 	http.Redirect(w, r, "/signin.html", http.StatusTemporaryRedirect)
 }
 
-func MakeHandler() *AppHandler {
+func MakeHandler(filepath string) *AppHandler {
 	r := mux.NewRouter()
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
-		//negroni.HandlerFunc(CheckSignin),
+		negroni.HandlerFunc(CheckSignin),
 		negroni.NewStatic(http.Dir("public")))
 	n.UseHandler(r)
 
 	a := &AppHandler{
 		Handler: n,
-		db:      model.NewDBHandler(),
+		db:      model.NewDBHandler(filepath),
 	}
 
 	r.HandleFunc("/todos", a.getTodoListHandler).Methods("GET")
