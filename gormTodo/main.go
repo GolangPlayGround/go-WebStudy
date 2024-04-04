@@ -1,7 +1,7 @@
 package main
 
 import (
-	"goWeb/gormTodo/app"
+	"gormTodo/app"
 	"log"
 	"net/http"
 )

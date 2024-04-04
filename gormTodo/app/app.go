@@ -1,7 +1,7 @@
 package app
 
 import (
-	"goWeb/gormTodo/model"
+	"gormTodo/model"
 	"net/http"
 	"os"
 	"strconv"
@@ -84,22 +84,18 @@ func (a *AppHandler) Close() {
 }
 
 func CheckSignin(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	// if request URL is /signin.html, then next()
 	if strings.Contains(r.URL.Path, "/signin") ||
 		strings.Contains(r.URL.Path, "/auth") {
 		next(w, r)
 		return
 	}
 
-	// if user already signed in
 	sessionID := getSesssionID(r)
 	if sessionID != "" {
 		next(w, r)
 		return
 	}
 
-	// if not user sign in
-	// redirect singin.html
 	http.Redirect(w, r, "/signin.html", http.StatusTemporaryRedirect)
 }
 
@@ -108,7 +104,6 @@ func MakeHandler(filepath string) *AppHandler {
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
-		negroni.HandlerFunc(CheckSignin),
 		negroni.NewStatic(http.Dir("public")))
 	n.UseHandler(r)
 
