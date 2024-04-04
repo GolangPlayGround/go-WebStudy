@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type sqliteHandler struct {
@@ -48,7 +49,9 @@ func (s *sqliteHandler) Close() {
 }
 
 func newSqliteHandler(filepath string) *sqliteHandler {
-	db, err := gorm.Open(sqlite.Open(filepath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(filepath), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic(err)
 	}
